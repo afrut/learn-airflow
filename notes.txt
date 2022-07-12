@@ -1,0 +1,20 @@
+# Running Airflow with Docker
+https://airflow.apache.org/docs/apache-airflow/stable/start/docker.html#docker
+
+# Download yaml file
+https://airflow.apache.org/docs/apache-airflow/stable/docker-compose.yaml
+
+# Initialize database
+docker-compose up airflow-init
+
+# Cleanup for resetting
+docker-compose down --volumes --remove-orphans
+
+# Run Airflow
+docker-compose up
+
+# Run cli commands
+docker-coimpose run airflow-worker airflow info
+
+# Stop and delete containers, delete volumes, and delete images
+docker-compose down --volumes --rmi all
