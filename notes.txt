@@ -14,7 +14,24 @@ docker-compose down --volumes --remove-orphans
 docker-compose up
 
 # Run cli commands
-docker-coimpose run airflow-worker airflow info
+docker-compose run airflow-worker airflow info
 
 # Stop and delete containers, delete volumes, and delete images
 docker-compose down --volumes --rmi all
+
+# Start a bash session inside a worker
+docker exec -it airflow-worker-container-id bash
+
+# List dags
+airflow dags list
+airflow tasks list dag-id
+airflow tasks list dag-id --tree
+
+# Test a single dag
+airflow dags test dag-id date
+
+# Test a single task instance
+airflow tasks test dag-id task-id date
+
+# Run a backfill
+airflow dags backfill dag-id --start-date date1 --end-date date2
