@@ -14,24 +14,45 @@ with DAG(
     ,catchup = False
 ) as dag:
 
+    # Function that the PythonOperator runs
     def func(*args, **kwargs):
-        print(args)
-        print(kwargs["key"])
-        print(kwargs["templates_dict"]["ds"])
-        print(kwargs["templates_dict"]["query"])
+        print(f"Positional arguments: {args}")
+        print(f"Keyword arguments message: {kwargs['message']}")
+        print(f"Jinja-templated argument ds: {kwargs['templates_dict']['ds']}")
+        print(f"Jinja-templated file contents query: {kwargs['templates_dict']['query']}")
+        print(f"Default tempalte variables passed in automatically:")
+        ls = ["data_interval_start", "data_interval_end" , "ds", "ts"]
+        for k in ls:
+            print(f"    {k} = {kwargs[k]}")
 
+    # Create a PythonOperator task
     t1 = PythonOperator(
+        # unique identifier of the task
         task_id = "func"
+        
+        # function to run
         , python_callable = func
+
+        # dictionary is passed in as kwargs in function
         , op_kwargs = {
-            "key": "hello world"
+            "message": "hello world"
         }
+
+        # positional arguments is passed in as args
         , op_args = [1, "foo", "bar"]
+
         , templates_dict = {
+            # pass in jinja-templated values
             "ds": "{{ ds }}"
+
+            # pass in jinja-templated files
             , "query": "./sql/query.sql"
         }
+
+        # specify that .sql files are jinja-templated
         , templates_exts = [".sql"]
+
+        # don't show return
         , show_return_value_in_logs = False
     )
 
