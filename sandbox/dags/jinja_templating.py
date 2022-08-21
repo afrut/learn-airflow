@@ -1,3 +1,4 @@
+# Full list of template variables here: https://airflow.apache.org/docs/apache-airflow/stable/templates-ref.html#templates-variables
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import timedelta, datetime
@@ -23,12 +24,24 @@ with DAG(
         ls = ["data_interval_start", "data_interval_end" , "ds", "ts"]
         for k in ls:
             print(f"    {k} = {kwargs[k]}")
+        obj = kwargs["object"]
+        print(f"Jinja-templated object variable = {obj.var}")
+        print(f"Jinja-templated object variable2 = {obj.var2}")
+
+    class MyClass:
+        # Field names in template_fields are Jinja-substituted.
+        # template_fields can also be an instance variable.
+        template_fields = ("var", "var2")
+        def __init__(self, var):
+            self.var = var
+            self.var2 = "{{ task_instance }}"
 
     t1 = PythonOperator(
         task_id = "func"
         , python_callable = func
         , op_kwargs = {
             "message": "hello world"
+            ,"object": MyClass("{{ ds }}")
         }
         , op_args = [1, "foo", "bar"]
 
