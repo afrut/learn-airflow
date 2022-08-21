@@ -14,7 +14,6 @@ with DAG(
     ,catchup = False
 ) as dag:
 
-    # Function that the PythonOperator runs
     def func(*args, **kwargs):
         print(f"Positional arguments: {args}")
         print(f"Keyword arguments message: {kwargs['message']}")
@@ -25,22 +24,16 @@ with DAG(
         for k in ls:
             print(f"    {k} = {kwargs[k]}")
 
-    # Create a PythonOperator task
     t1 = PythonOperator(
-        # unique identifier of the task
         task_id = "func"
-        
-        # function to run
         , python_callable = func
-
-        # dictionary is passed in as kwargs in function
         , op_kwargs = {
             "message": "hello world"
         }
-
-        # positional arguments is passed in as args
         , op_args = [1, "foo", "bar"]
 
+        # templates_dict is marked as templated in documentation.
+        # This means Jinja templating can be used with this parameter.
         , templates_dict = {
             # pass in jinja-templated values
             "ds": "{{ ds }}"
@@ -51,8 +44,6 @@ with DAG(
 
         # specify that .sql files are jinja-templated
         , templates_exts = [".sql"]
-
-        # don't show return
         , show_return_value_in_logs = False
     )
 
