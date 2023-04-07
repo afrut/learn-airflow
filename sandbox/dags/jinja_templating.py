@@ -1,4 +1,5 @@
 # Full list of template variables here: https://airflow.apache.org/docs/apache-airflow/stable/templates-ref.html#templates-variables
+# TODO: continue here: https://airflow.apache.org/docs/apache-airflow/stable/concepts/operators.html#jinja-templating
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import timedelta, datetime
